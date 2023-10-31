@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" filePermissions="504" folderPermissions="504" remoteFilesAllowedToDisappearOnAutoupload="false" />
+  <component name="PublishConfigData" serverName="pen.eiu.edu" filePermissions="504" folderPermissions="504" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="pen.eiu.edu">
+        <serverdata>
+          <mappings>
+            <mapping deploy="mis4770/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
 </project>

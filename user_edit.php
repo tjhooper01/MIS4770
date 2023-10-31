@@ -22,11 +22,12 @@ $user_info = $mysqli->user_info($in_id);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
-    $mysqli->user_insert($_POST['user_email'], $_POST['user_name'], $_POST['user_password'], $_POST['user_level_id']);
 
-    $mysqli->actions_insert("Added User: " . $_POST['user_email'], $_SESSION[PREFIX . '_user_id']);
+    $mysqli->user_edit($in_id, $_POST['user_email'], $_POST['user_name'], $_POST['user_password'], $_POST['user_level_id']);
 
-    $_SESSION[PREFIX . '_action'][] = 'added';
+    $mysqli->actions_insert("Updated User: " . $_POST['user_email'], $_SESSION[PREFIX . '_user_id']);
+
+    $_SESSION[PREFIX . '_action'][] = 'updated';
     header("location: user_list.php");
     exit;
 }//END POST

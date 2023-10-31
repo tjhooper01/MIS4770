@@ -4,12 +4,13 @@ include "include/config.inc";
 
 if ($_POST['email'] != "" && $_POST['password'] != "") {
 
-    /*
-    $login_response = $mysqli->login($net_id, $_POST['password']);
+
+    $login_response = $mysqli->login($_POST['email'], $_POST['password']);
     if ($login_response[0] == 1) {
-        $_SESSION[PREFIX . '_username'] = $login_response[1]['net_id'];
+        $_SESSION[PREFIX . '_username'] = $login_response[1]['email'];
+        $_SESSION[PREFIX . '_user_id'] = $login_response[1]['user_id'];
         $_SESSION[PREFIX . '_security'] = $login_response[1]['user_level_id'];
-        $_SESSION[PREFIX . '_fullname'] = $login_response[1]['name'];
+        $_SESSION[PREFIX . '_fullname'] = $login_response[1]['user_name'];
 
         if ($_SESSION[PREFIX . "_ppage"] != '') {
             $redirect = $_SESSION[PREFIX . "_ppage"];
@@ -21,16 +22,6 @@ if ($_POST['email'] != "" && $_POST['password'] != "") {
     } else {
         $loginF = "You are not approved to access this site";
     }
-    */
-    $_SESSION[PREFIX . '_username'] = $_POST['email'];
-    $_SESSION[PREFIX . '_user_id'] = 1;
-    $_SESSION[PREFIX . '_security'] = 15;
-    if ($_SESSION[PREFIX . "_ppage"] != '') {
-        $redirect = $_SESSION[PREFIX . "_ppage"];
-        header("location: $redirect");
-        exit;
-    }
-    header("location:index.php");
 
 }//END POST
 

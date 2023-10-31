@@ -187,9 +187,47 @@ class mysqli_class extends mysqli
 
     }
 
+    /**** LOGIN ******************************************************************
+     * /*## Checks login credentials */
+    public function login($email, $password)
+    {
+
+        $query = "SELECT * FROM users WHERE email = ?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("s", $email);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            $stmt->fetch();
+            $x = array();
+            foreach ($row as $key => $val) {
+                $x[$key] = $val;
+            }
+            $stmt->close();
+
+            if ($x['email'] == $email && password_verify($password, $x['user_password'])) {
+                $this->logins_insert($x['user_id']);
+                return array(1, $x);
+            } else {
+                return array(0, $x);
+            }
+
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+    }
+
     /*** LOG LOGINS ******************************************************************
      * /*## Logs user logins  */
-    public function logins_insert($user_id)
+    public
+    function logins_insert($user_id)
     {
         $agent = $_SERVER['HTTP_USER_AGENT'];
         $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
@@ -201,13 +239,24 @@ class mysqli_class extends mysqli
 				login_browser)	
 			VALUES
 				(?,?,?)";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("iss", $user_id, $ip, $agent);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $last_id = $this->insert_id;
 
-        $params = array('sss', &$username, &$ip, &$agent);
-        return $this->run_query($query, 'insert', $params);
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+        return $last_id;
     }
 
     //ADD actions logging
-    public function actions_insert($action, $user_id)
+    public
+    function actions_insert($action, $user_id)
     {
         $page = $_SERVER['REQUEST_URI'];
         $agent = $_SERVER['HTTP_USER_AGENT'];
@@ -246,7 +295,8 @@ class mysqli_class extends mysqli
 
     /*** INFO ******************************************************************
      * /*## Gets info for a row */
-    public function user_info($user_id)
+    public
+    function user_info($user_id)
     {
 
         $results = array();
@@ -283,7 +333,8 @@ class mysqli_class extends mysqli
 
     /*** USER LIST ******************************************************************
      * /*## List all data */
-    public function user_list()
+    public
+    function user_list()
     {
         $results = array();
         $query = "
@@ -322,7 +373,8 @@ class mysqli_class extends mysqli
 
     /*** USER ADD  ******************************************************************
      * /*## adds row  data */
-    public function user_insert($email, $name, $password, $level)
+    public
+    function user_insert($email, $name, $password, $level)
     {
         $pass_hash = password_hash($password, PASSWORD_DEFAULT);
         $query = "
@@ -354,21 +406,24 @@ class mysqli_class extends mysqli
 
     /*** USER EDIT  ******************************************************************
      * /*## Updates row */
-    public function user_edit($net_id, $user_fname, $user_lname, $user_level, $user_phone, $user_email, $user_notify)
+    public
+    function user_edit($user_id, $email, $name, $password, $level)
     {
-
+        if ($password) {
+            $pass_hash = password_hash($password, PASSWORD_DEFAULT);
+        } else {
+            $pass_hash = $this->user_info($user_id)['user_password'];
+        }
         $query = "
 			UPDATE users SET
-				user_fname = ?,
-				user_lname = ?,
-				user_level = ?,
-				user_phone = ?,
-				user_email =?,
-				user_notify = ?
+				email = ?,
+				user_name = ?,
+				user_password = ?,
+				user_level_id = ?
 			WHERE
-				net_id=?";
+				user_id = ?";
         if ($stmt = parent::prepare($query)) {
-            $stmt->bind_param("ssissis", $user_fname, $user_lname, $user_level, $user_phone, $user_email, $user_notify, $net_id);
+            $stmt->bind_param("sssii", $email, $name, $pass_hash, $level, $user_id);
             if (!$stmt->execute()) {
                 trigger_error($this->error, E_USER_WARNING);
             }
@@ -383,16 +438,17 @@ class mysqli_class extends mysqli
 
     /*** USER REMOVE  ******************************************************************
      * /*## removes row */
-    public function user_remove($net_id)
+    public
+    function user_remove($user_id)
     {
 
         $query = "
 			DELETE FROM
 				users
 			WHERE
-				net_id = ?";
+				user_id = ?";
         if ($stmt = parent::prepare($query)) {
-            $stmt->bind_param("s", $net_id);
+            $stmt->bind_param("i", $user_id);
             if (!$stmt->execute()) {
                 trigger_error($this->error, E_USER_WARNING);
             }
@@ -406,7 +462,8 @@ class mysqli_class extends mysqli
 
     /*** USER LEVEL LIST ******************************************************************
      * /*## List all data */
-    public function user_level_list()
+    public
+    function user_level_list()
     {
         $results = array();
         $query = "
