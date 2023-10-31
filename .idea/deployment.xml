@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="webadmin" filePermissions="504" folderPermissions="504" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
-    <option name="confirmBeforeUploading" value="false" />
-    <serverData>
-      <paths name="webadmin">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/mnt/mainwebprod/apache2/secure_htdocs/apps/metronic/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-    </serverData>
-  </component>
+  <component name="PublishConfigData" filePermissions="504" folderPermissions="504" remoteFilesAllowedToDisappearOnAutoupload="false" />
 </project>

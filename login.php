@@ -1,10 +1,10 @@
 <?php
-include "include/config.php";
+include "include/config.inc";
 
-if ($_POST['username'] != "" && $_POST['password'] != "") {
-    //STRIP @eiu.edu so only netid remains, change to all lowercase
-    $net_id = trim(strtolower(explode('@', $_POST['username'])[0]));
 
+if ($_POST['email'] != "" && $_POST['password'] != "") {
+
+    /*
     $login_response = $mysqli->login($net_id, $_POST['password']);
     if ($login_response[0] == 1) {
         $_SESSION[PREFIX . '_username'] = $login_response[1]['net_id'];
@@ -21,6 +21,17 @@ if ($_POST['username'] != "" && $_POST['password'] != "") {
     } else {
         $loginF = "You are not approved to access this site";
     }
+    */
+    $_SESSION[PREFIX . '_username'] = $_POST['email'];
+    $_SESSION[PREFIX . '_user_id'] = 1;
+    $_SESSION[PREFIX . '_security'] = 15;
+    if ($_SESSION[PREFIX . "_ppage"] != '') {
+        $redirect = $_SESSION[PREFIX . "_ppage"];
+        header("location: $redirect");
+        exit;
+    }
+    header("location:index.php");
+
 }//END POST
 
 //echo $_SESSION[PREFIX."_ppage"];
@@ -28,111 +39,70 @@ if ($_POST['username'] != "" && $_POST['password'] != "") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<!-- BEGIN HEAD -->
 
 <head>
-    <meta charset="utf-8"/>
-    <title><?php
-        echo $app_name; ?> - Login</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Majestic Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="images/favicon.png"/>
+</head>
 
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet"
-          type="text/css"/>
-    <link href="../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet"
-          type="text/css"/>
-    <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="../assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <!-- END PAGE LEVEL PLUGINS -->
-    <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="../assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css"/>
-    <link href="../assets/global/css/plugins.min.css" rel="stylesheet" type="text/css"/>
-    <!-- END THEME GLOBAL STYLES -->
-    <!-- BEGIN PAGE LEVEL STYLES -->
-    <link href="../assets/pages/css/login.min.css" rel="stylesheet" type="text/css"/>
-    <!-- END PAGE LEVEL STYLES -->
-    <!-- BEGIN THEME LAYOUT STYLES -->
-    <!-- END THEME LAYOUT STYLES -->
-    <!-- END HEAD -->
+<body>
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth px-0">
+            <div class="row w-100 mx-0">
+                <div class="col-lg-4 mx-auto">
+                    <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                        <div class="brand-logo">
+                            <img src="images/logo.svg" alt="logo">
+                        </div>
+                        <h4>Hello! let's get started</h4>
+                        <h6 class="font-weight-light">Sign in to continue.</h6>
+                        <form class="pt-3" action="" method="POST">
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-lg" id="email" name="email"
+                                       placeholder="Username" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control form-control-lg" id="password"
+                                       name="password"
+                                       placeholder="Password" required>
+                            </div>
+                            <div class="mt-3">
+                                <input type="submit" id="submit"
+                                       class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                                       value="SIGN IN">
+                            </div>
 
-<body class=" login">
-<!-- BEGIN LOGO -->
-<div class="logo">
-    <a href="/">
-        <img src="../assets/pages/img/logo.png" alt=""/> </a>
-</div>
-<!-- END LOGO -->
-<!-- BEGIN LOGIN -->
-<div class="content">
-    <!-- BEGIN LOGIN FORM -->
-    <form class="login-form" action="" method="post">
-        <div class="form-title">
-            <h3 class="form-title font-green"><?php
-                echo $app_name; ?> Login</h3>
-        </div>
-        <div class="alert alert-danger display-hide">
-            <button class="close" data-close="alert"></button>
-            <span> Enter EIU NetID and password. </span>
-        </div>
-        <div class="form-group">
-            <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-            <label class="control-label visible-ie8 visible-ie9">NetID</label>
-            <div class="input-icon">
-                <i class="fa fa-user"></i>
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="EIU NetID"
-                       name="username" autofocus required/>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9">Password</label>
-            <div class="input-icon">
-                <i class="fa fa-lock"></i>
-                <input class="form-control placeholder-no-fix" type="password" required placeholder="Password"
-                       name="password"/>
-            </div>
-        </div>
-        <div class="form-actions">
-            <button type="submit" class="btn green btn-block uppercase">Login</button>
-        </div>
-        <div class="login-options">
-            <h3>Questions?</h3>
-            <p><a href="https://www.eiu.edu/marcom/">EIU Marketing & Communications</a><br>
-                Email: <a href="mailto:support@eiu.edu">support@eiu.edu</a>
-            </p>
-        </div>
-    </form>
-    <!-- END LOGIN FORM -->
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
 </div>
-<div class="copyright hide"> 2021 © EIU</div>
-<!-- END LOGIN -->
-
-<!-- BEGIN CORE PLUGINS -->
-<script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="../assets/pages/scripts/login.min.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
-<!-- BEGIN THEME LAYOUT SCRIPTS -->
-<!-- END THEME LAYOUT SCRIPTS -->
-
+<!-- container-scroller -->
+<!-- plugins:js -->
+<script src="vendors/base/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- inject:js -->
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/template.js"></script>
+<!-- endinject -->
 </body>
 
 </html>

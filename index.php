@@ -1,110 +1,404 @@
 <?php
-include "include/config.php";
+include "include/config.inc";
 
-$_SESSION[PREFIX."_ppage"] = $_SERVER['REQUEST_URI'];
-if ($_SESSION[PREFIX.'_username'] == "") {
+$_SESSION[PREFIX . "_ppage"] = $_SERVER['REQUEST_URI'];
+if ($_SESSION[PREFIX . '_username'] == "") {
     header("Location: login.php");
     exit;
 }
-if ($_SESSION[PREFIX.'_security'] < 1) {
-    header("location:login.php");
+if ($_SESSION[PREFIX . '_security'] < 5) {
+    header("location:index.php?action=5");
     exit;
 }
 
-$page_name = "Boilerplate";
-if ($tank) {
-    echo "Sauce";
-}
+$page_name = "Dashboard";
+
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title><?php echo $app_name;?> - <?php echo $page_name;?></title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-			<?php require_once "include/layout_head.php";?>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><?php echo $app_name; ?> - <?php echo $page_name; ?></title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="images/favicon.png"/>
+</head>
+<body>
+<div class="container-scroller">
 
-    <!-- END HEAD -->
-    </head>
-    <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-sidebar-fixed">
-        <div class="page-wrapper">
-            <!-- BEGIN HEADER -->
-            	<?php require_once "include/layout_header.php";?>
-            <!-- END HEADER -->
-            <!-- BEGIN HEADER & CONTENT DIVIDER -->
-            <div class="clearfix"> </div>
-            <!-- END HEADER & CONTENT DIVIDER -->
-            <!-- BEGIN CONTAINER -->
-            <div class="page-container">
-                <!-- BEGIN SIDEBAR -->
-                <div class="page-sidebar-wrapper">
-                    <!-- BEGIN SIDEBAR -->
-                    <?php $current_menu = "admin"; require_once "include/layout_left_menu.php";?>
-                </div>
-                <!-- END SIDEBAR -->
-                <!-- BEGIN CONTENT -->
-                <div class="page-content-wrapper">
-                    <!-- BEGIN CONTENT BODY -->
-                    <div class="page-content">
-                        <!-- BEGIN PAGE HEADER-->
-                        
-                        <!-- BEGIN PAGE BAR -->
-                        <div class="page-bar">
-                            <ul class="page-breadcrumb">
-                                <li><a href="index.php">Home</a><i class="fa fa-circle"></i></li>
-                            </ul>
-                            
-                        </div>
-                        <!-- END PAGE BAR -->
-                        <!-- BEGIN PAGE TITLE-->
-                        <h1 class="page-title"><?php echo $page_name;?></h1>
-                        <!-- END PAGE TITLE-->
-                        <!-- END PAGE HEADER-->
-                        <div class="page-content-body">
-                            <?php include "include/notifications.php";?>
-                            
-                            
-                            <div class="row">
-                            <div class="col-md-12">
-                              
-                              <h2>This is your starting place</h2>
-                              <p>You can view all samples of code for Metronic here: <a href="https://www.eiu.edu/apps/metronic_sample/">https://www.eiu.edu/apps/metronic_sample/</a></p>
-	                              
-                              
-                              
+    <?php require_once 'partials/_navbar.php'; ?>
+    <div class="container-fluid page-body-wrapper">
+        <?php require_once 'partials/_sidebar.php'; ?>
+        <div class="main-panel">
+            <div class="content-wrapper">
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin">
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <div class="d-flex align-items-end flex-wrap">
+                                <div class="me-md-3 me-xl-5">
+                                    <h2><?php echo $page_name; ?></h2>
+                                    <p class="mb-md-0">Your analytics dashboard template.</p>
+                                </div>
+                                <div class="d-flex">
+                                    <i class="mdi mdi-home text-muted hover-cursor"></i>
+                                    <p class="text-muted mb-0 hover-cursor">&nbsp;/&nbsp;Dashboard&nbsp;/&nbsp;</p>
+                                    <p class="text-primary mb-0 hover-cursor">Analytics</p>
+                                </div>
                             </div>
+                            <div class="d-flex justify-content-between align-items-end flex-wrap">
+                                <button type="button" class="btn btn-light bg-white btn-icon me-3 d-none d-md-block ">
+                                    <i class="mdi mdi-download text-muted"></i>
+                                </button>
+                                <button type="button" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
+                                    <i class="mdi mdi-clock-outline text-muted"></i>
+                                </button>
+                                <button type="button" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
+                                    <i class="mdi mdi-plus text-muted"></i>
+                                </button>
+                                <button class="btn btn-primary mt-2 mt-xl-0">Generate report</button>
                             </div>
                         </div>
-                            
-                            
-                            
-                            
                     </div>
-                    <!-- END CONTENT BODY -->
                 </div>
-                <!-- END CONTENT -->
-               
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body dashboard-tabs p-0">
+                                <ul class="nav nav-tabs px-4" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="overview-tab" data-bs-toggle="tab"
+                                           href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="sales-tab" data-bs-toggle="tab" href="#sales" role="tab"
+                                           aria-controls="sales" aria-selected="false">Sales</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="purchases-tab" data-bs-toggle="tab" href="#purchases"
+                                           role="tab" aria-controls="purchases" aria-selected="false">Purchases</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content py-0 px-0">
+                                    <div class="tab-pane fade show active" id="overview" role="tabpanel"
+                                         aria-labelledby="overview-tab">
+                                        <div class="d-flex flex-wrap justify-content-xl-between">
+                                            <div class="d-none d-xl-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-calendar-heart icon-lg me-3 text-primary"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Start date</small>
+                                                    <div class="dropdown">
+                                                        <a class="btn btn-secondary dropdown-toggle p-0 bg-transparent border-0 text-dark shadow-none font-weight-medium"
+                                                           href="#" role="button" id="dropdownMenuLinkA"
+                                                           data-bs-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false">
+                                                            <h5 class="mb-0 d-inline-block">26 Jul 2018</h5>
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkA">
+                                                            <a class="dropdown-item" href="#">12 Aug 2018</a>
+                                                            <a class="dropdown-item" href="#">22 Sep 2018</a>
+                                                            <a class="dropdown-item" href="#">21 Oct 2018</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Revenue</small>
+                                                    <h5 class="me-2 mb-0">$577545</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Total views</small>
+                                                    <h5 class="me-2 mb-0">9833550</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-download me-3 icon-lg text-warning"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Downloads</small>
+                                                    <h5 class="me-2 mb-0">2233783</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-flag me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Flagged</small>
+                                                    <h5 class="me-2 mb-0">3497843</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="sales" role="tabpanel" aria-labelledby="sales-tab">
+                                        <div class="d-flex flex-wrap justify-content-xl-between">
+                                            <div class="d-none d-xl-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-calendar-heart icon-lg me-3 text-primary"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Start date</small>
+                                                    <div class="dropdown">
+                                                        <a class="btn btn-secondary dropdown-toggle p-0 bg-transparent border-0 text-dark shadow-none font-weight-medium"
+                                                           href="#" role="button" id="dropdownMenuLinkA"
+                                                           data-bs-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false">
+                                                            <h5 class="mb-0 d-inline-block">26 Jul 2018</h5>
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkA">
+                                                            <a class="dropdown-item" href="#">12 Aug 2018</a>
+                                                            <a class="dropdown-item" href="#">22 Sep 2018</a>
+                                                            <a class="dropdown-item" href="#">21 Oct 2018</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-download me-3 icon-lg text-warning"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Downloads</small>
+                                                    <h5 class="me-2 mb-0">2233783</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Total views</small>
+                                                    <h5 class="me-2 mb-0">9833550</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Revenue</small>
+                                                    <h5 class="me-2 mb-0">$577545</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-flag me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Flagged</small>
+                                                    <h5 class="me-2 mb-0">3497843</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="purchases" role="tabpanel"
+                                         aria-labelledby="purchases-tab">
+                                        <div class="d-flex flex-wrap justify-content-xl-between">
+                                            <div class="d-none d-xl-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-calendar-heart icon-lg me-3 text-primary"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Start date</small>
+                                                    <div class="dropdown">
+                                                        <a class="btn btn-secondary dropdown-toggle p-0 bg-transparent border-0 text-dark shadow-none font-weight-medium"
+                                                           href="#" role="button" id="dropdownMenuLinkA"
+                                                           data-bs-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false">
+                                                            <h5 class="mb-0 d-inline-block">26 Jul 2018</h5>
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkA">
+                                                            <a class="dropdown-item" href="#">12 Aug 2018</a>
+                                                            <a class="dropdown-item" href="#">22 Sep 2018</a>
+                                                            <a class="dropdown-item" href="#">21 Oct 2018</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Revenue</small>
+                                                    <h5 class="me-2 mb-0">$577545</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Total views</small>
+                                                    <h5 class="me-2 mb-0">9833550</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-download me-3 icon-lg text-warning"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Downloads</small>
+                                                    <h5 class="me-2 mb-0">2233783</h5>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                                                <i class="mdi mdi-flag me-3 icon-lg text-danger"></i>
+                                                <div class="d-flex flex-column justify-content-around">
+                                                    <small class="mb-1 text-muted">Flagged</small>
+                                                    <h5 class="me-2 mb-0">3497843</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">Cash deposits</p>
+                                <p class="mb-4">To start a blog, think of a topic about and first brainstorm party is
+                                    ways to write details</p>
+                                <div id="cash-deposits-chart-legend" class="d-flex justify-content-center pt-3"></div>
+                                <canvas id="cash-deposits-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">Total sales</p>
+                                <h1>$ 28835</h1>
+                                <h4>Gross sales over the years</h4>
+                                <p class="text-muted">Today, many people rely on computers to do homework, work, and
+                                    create or store useful information. Therefore, it is important </p>
+                                <div id="total-sales-chart-legend"></div>
+                            </div>
+                            <canvas id="total-sales-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">Recent Purchases</p>
+                                <div class="table-responsive">
+                                    <table id="recent-purchases-listing" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Status report</th>
+                                            <th>Office</th>
+                                            <th>Price</th>
+                                            <th>Date</th>
+                                            <th>Gross amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Jeremy Ortega</td>
+                                            <td>Levelled up</td>
+                                            <td>Catalinaborough</td>
+                                            <td>$790</td>
+                                            <td>06 Jan 2018</td>
+                                            <td>$2274253</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alvin Fisher</td>
+                                            <td>Ui design completed</td>
+                                            <td>East Mayra</td>
+                                            <td>$23230</td>
+                                            <td>18 Jul 2018</td>
+                                            <td>$83127</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Emily Cunningham</td>
+                                            <td>support</td>
+                                            <td>Makennaton</td>
+                                            <td>$939</td>
+                                            <td>16 Jul 2018</td>
+                                            <td>$29177</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Minnie Farmer</td>
+                                            <td>support</td>
+                                            <td>Agustinaborough</td>
+                                            <td>$30</td>
+                                            <td>30 Apr 2018</td>
+                                            <td>$44617</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Betty Hunt</td>
+                                            <td>Ui design not completed</td>
+                                            <td>Lake Sandrafort</td>
+                                            <td>$571</td>
+                                            <td>25 Jun 2018</td>
+                                            <td>$78952</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Myrtie Lambert</td>
+                                            <td>Ui design completed</td>
+                                            <td>Cassinbury</td>
+                                            <td>$36</td>
+                                            <td>05 Nov 2018</td>
+                                            <td>$36422</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jacob Kennedy</td>
+                                            <td>New project</td>
+                                            <td>Cletaborough</td>
+                                            <td>$314</td>
+                                            <td>12 Jul 2018</td>
+                                            <td>$34167</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ernest Wade</td>
+                                            <td>Levelled up</td>
+                                            <td>West Fidelmouth</td>
+                                            <td>$484</td>
+                                            <td>08 Sep 2018</td>
+                                            <td>$50862</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- END CONTAINER -->
-            <!-- BEGIN FOOTER -->
-            <?php require_once "include/layout_footer.php";?>
-        
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
+            <!-- content-wrapper ends -->
+            <?php require_once 'partials/_footer.php'; ?>
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
 
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+<!-- plugins:js -->
+<script src="vendors/base/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="vendors/chart.js/Chart.min.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/template.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="js/dashboard.js"></script>
+<script src="js/data-table.js"></script>
+<script src="js/jquery.dataTables.js"></script>
+<script src="js/dataTables.bootstrap4.js"></script>
+<!-- End custom js for this page-->
 
-        <!-- END PAGE LEVEL SCRIPTS -->
-		
-		<script>
-		$(document).ready( function () {
-		    $('#datatable').DataTable();
-		} );
-		</script>
-
-    </body>
+<script src="js/jquery.cookie.js" type="text/javascript"></script>
+</body>
 
 </html>
+

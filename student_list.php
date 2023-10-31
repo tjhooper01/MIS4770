@@ -11,7 +11,7 @@ if ($_SESSION[PREFIX . '_security'] < 5) {
     exit;
 }
 
-$page_name = "Users";
+$page_name = "Students";
 
 
 ?>
@@ -56,8 +56,8 @@ $page_name = "Users";
                             </div>
                             <div class="d-flex justify-content-between align-items-end flex-wrap">
 
-                                <a href="user_add.php" class="btn btn-primary mt-2 mt-xl-0"><i
-                                            class="mdi mdi-plus-circle-outline btn-icon-prepend"></i> Add User</a>
+                                <a href="student_add.php" class="btn btn-primary mt-2 mt-xl-0"><i
+                                            class="mdi mdi-plus-circle-outline btn-icon-prepend"></i> Add Student</a>
                             </div>
 
                         </div>
@@ -75,23 +75,25 @@ $page_name = "Users";
                                            data-page-length='100' data-state-save="true" style="width: 100%;">
                                         <thead>
                                         <tr>
+                                            <th>Student</th>
                                             <th>Email</th>
-                                            <th>Name</th>
-                                            <th>Level</th>
+                                            <th>Phone</th>
+                                            <th>DOB</th>
                                         </tr>
                                         </thead>
                                         <tbody>
 
                                         <?php
-                                        $results = $mysqli->user_list();
+                                        $results = $mysqli->student_list();
                                         foreach ($results as $result) {
                                             ?>
                                             <tr>
                                                 <td>
-                                                    <a href="user_edit.php?id=<?php echo $result['user_id']; ?>"><?php echo $result['email']; ?></a>
+                                                    <a href="student_edit.php?id=<?php echo $result['student_id']; ?>"><?php echo $result['student_fname'] . " " . $result['student_lname']; ?></a>
                                                 </td>
-                                                <td><?php echo $result['user_name']; ?></td>
-                                                <td><?php echo $result['user_level_name']; ?></td>
+                                                <td><?php echo $result['student_email']; ?></td>
+                                                <td><?php echo $result['student_phone']; ?></td>
+                                                <td><?php echo $result['student_dob']; ?></td>
                                             </tr>
                                             <?php
                                         }

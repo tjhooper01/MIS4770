@@ -6,21 +6,28 @@ if ($_SESSION[PREFIX . '_username'] == "") {
     header("Location: login.php");
     exit;
 }
-if ($_SESSION[PREFIX . '_security'] < 10) {
+if ($_SESSION[PREFIX . '_security'] < 5) {
     header("location:index.php?action=5");
     exit;
 }
 
-$page_name = "User Add";
+$page_name = "Student Edit";
+$in_id = (int)$_GET['id'];
+if (!$in_id) {
+    header("location: student_list.php");
+    exit;
+}
+$student_info = $mysqli->student_info($in_id);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
-    $mysqli->user_insert($_POST['user_email'], $_POST['user_name'], $_POST['user_password'], $_POST['user_level_id']);
+    $mysqli->student_edit($in_id, $_POST['student_fname'], $_POST['student_lname'], $_POST['student_email'], $_POST['student_phone'], $_POST['student_dob']);
 
-    $mysqli->actions_insert("Added User: " . $_POST['user_email'], $_SESSION[PREFIX . '_user_id']);
+    $mysqli->actions_insert("Updated Student (" . $_GET['id'] . "): " . $_POST['student_fname'] . " " . $_POST['student_lname'], $_SESSION[PREFIX . '_user_id']);
+
 
     $_SESSION[PREFIX . '_action'][] = 'added';
-    header("location: user_list.php");
+    header("location: student_list.php");
     exit;
 }//END POST
 
@@ -75,48 +82,59 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <div class="col-md-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title"><?php echo $page_name; ?></h4>
+                                <h4 class="card-title">Horizontal Form</h4>
                                 <p class="card-description">
                                     Horizontal form layout
                                 </p>
                                 <form class="forms-sample" id="form1" action="" method="post">
 
                                     <div class="form-group row">
-                                        <label for="user_name" class="col-sm-3 col-form-label">Name</label>
+                                        <label for="student_fname" class="col-sm-3 col-form-label">First Name</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="user_name"
-                                                   name="user_name"
-                                                   placeholder="Full Name" autofocus required>
+                                            <input type="text" class="form-control" id="student_fname"
+                                                   name="student_fname"
+                                                   placeholder="First Name" required autofocus
+                                                   value="<?php echo $student_info['student_fname']; ?> ">
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="user_email" class="col-sm-3 col-form-label">Email</label>
+                                        <label for="student_lname" class="col-sm-3 col-form-label">Last Name</label>
                                         <div class="col-sm-9">
-                                            <input type="email" class="form-control" id="user_email"
-                                                   name="user_email"
-                                                   placeholder="Email" required>
+                                            <input type="text" class="form-control" id="student_lname"
+                                                   name="student_lname"
+                                                   placeholder="Last Name" required
+                                                   value="<?php echo $student_info['student_lname']; ?>">
+                                        </div>
+                                    </div>
+
+
+                                    <div class=" form-group row">
+                                        <label for="student_email" class="col-sm-3 col-form-label">Email</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="student_email"
+                                                   name="student_email"
+                                                   placeholder="Email"
+                                                   value="<?php echo $student_info['student_email']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="user_password" class="col-sm-3 col-form-label">Password</label>
+                                        <label for="student_phone" class="col-sm-3 col-form-label">Phone</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="user_password"
-                                                   name="user_password"
-                                                   placeholder="Password" required>
+                                            <input type="text" class="form-control" id="student_phone"
+                                                   name="student_phone"
+                                                   placeholder="Phone"
+                                                   value="<?php echo $student_info['student_phone']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="user_level_id" class="col-sm-3 col-form-label">User Level</label>
+                                        <label for="student_dob" class="col-sm-3 col-form-label">Date of
+                                            Birth</label>
                                         <div class="col-sm-9">
-                                            <select class="form-control" id="user_level_id"
-                                                    name="user_level_id" required>
-                                                <?php $results = $mysqli->user_level_list();
-                                                foreach ($results as $result) {
-                                                    ?>
-                                                    <option value="<?php echo $result['user_level_id']; ?>"><?php echo $result['user_level_name']; ?></option>
-                                                <?php } ?>
-                                            </select>
+                                            <input type="date" class="form-control" id="student_dob"
+                                                   name="student_dob"
+                                                   placeholder="Date of Birth"
+                                                   value="<?php echo $student_info['student_dob']; ?>">
                                         </div>
                                     </div>
 
