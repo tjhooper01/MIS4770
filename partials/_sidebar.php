@@ -8,9 +8,9 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="student_list.php">
+            <a class="nav-link" href="show_list.php">
                 <i class="mdi mdi-school menu-icon"></i>
-                <span class="menu-title">Students</span>
+                <span class="menu-title">Shows</span>
             </a>
         </li>
         <li class="nav-item">

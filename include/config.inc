@@ -11,6 +11,9 @@ session_name(PREFIX);
 //THIS IS JUST TO REDUCE PHP ERRORS
 date_default_timezone_set("America/Chicago");
 
+//SAVES SESSION IN MAIN DIR
+session_save_path("./");
+
 //START THE SESSION
 session_start();
 

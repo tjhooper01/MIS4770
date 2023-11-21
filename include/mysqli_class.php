@@ -9,11 +9,11 @@ class mysqli_class extends mysqli
 
         //OR SUPPLY OTHER CONNECTION INFO
         $DBHost = '43.231.234.179';
-        $DBUser = 'testuser';
-        $DBPass = 'testpass';
+        $DBUser = 'group2';
+        $DBPass = '2UTyvKnuAKA3mYCxWzY6jdyR2s';
 
         //SELECT THE DB
-        $databaseName = 'group0';
+        $databaseName = 'group2';
 
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         @parent::__construct($DBHost, $DBUser, $DBPass, $databaseName);
@@ -500,4 +500,132 @@ class mysqli_class extends mysqli
         return $results;
     }
 
+    /** SHOWS START HERE */
+    public function show_list()
+    {
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				shows
+			ORDER BY votes DESC";
+
+        if ($stmt = parent::prepare($query)) {
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            while ($stmt->fetch()) {
+                $x = array();
+                foreach ($row as $key => $val) {
+                    $x[$key] = $val;
+                }
+                $results[] = $x;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+        return $results;
+    }
+
+    public function show_insert($showname, $year, $runtime, $votes, $genres, $description)
+    {
+        $query = "
+			INSERT INTO shows
+				(show_name,
+				year,
+				runtime,
+				votes,
+				genres,
+				description)	
+			VALUES
+				(?,?,?,?,?,?)";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("siiiss", $showname, $year, $runtime, $votes, $genres, $description);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $last_id = $this->insert_id;
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $last_id;
+
+    }
+
+    public function show_info($id)
+    {
+
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				shows
+			WHERE
+				id = ?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            $stmt->fetch();
+            $x = array();
+            foreach ($row as $key => $val) {
+                $results[$key] = $val;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $results;
+
+    }
+
+    public function show_edit($id, $showname, $year, $runtime, $votes, $genres, $description)
+    {
+
+        $query = "
+			UPDATE shows SET 
+				show_name = ?,
+				year = ?,
+				runtime = ?,
+				votes = ?,
+				genres = ?,
+				description = ?
+			WHERE
+				id=?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("siiissi", $showname, $year, $runtime, $votes, $genres, $description, $id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+    }
 }//END CLASS
