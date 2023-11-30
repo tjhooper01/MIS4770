@@ -51,7 +51,6 @@ $page_name = "Shows";
                             <div class="d-flex align-items-end flex-wrap">
                                 <div class="me-md-3 me-xl-5">
                                     <h2><?php echo $page_name; ?></h2>
-                                    <p class="mb-md-0">text</p>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between align-items-end flex-wrap">

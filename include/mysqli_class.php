@@ -27,6 +27,142 @@ class mysqli_class extends mysqli
         }
     }
 
+
+    /*** LIST ******************************************************************
+     * /*## List all data */
+    public function student_list()
+    {
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				students		
+			ORDER BY student_lname";
+
+        if ($stmt = parent::prepare($query)) {
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            while ($stmt->fetch()) {
+                $x = array();
+                foreach ($row as $key => $val) {
+                    $x[$key] = $val;
+                }
+                $results[] = $x;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+        return $results;
+    }
+
+    /*** INFO ******************************************************************
+     * /*## Gets info for a row */
+    public function student_info($id)
+    {
+
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				students
+			WHERE
+				student_id = ?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            $stmt->fetch();
+            $x = array();
+            foreach ($row as $key => $val) {
+                $results[$key] = $val;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $results;
+
+    }
+
+    //ADD new students
+    public function student_insert($student_fname, $student_lname, $student_email, $student_phone, $student_dob)
+    {
+        $query = "
+			INSERT INTO students 
+				(student_fname,
+				student_lname,
+				student_email,
+				student_phone,
+				student_dob)	
+			VALUES
+				(?,?,?,?,?)";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("sssss", $student_fname, $student_lname, $student_email, $student_phone, $student_dob);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $last_id = $this->insert_id;
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $last_id;
+
+    }
+
+    //EDIT students
+
+    /*** EDIT  ******************************************************************
+     * /*## Updates row */
+    public function student_edit($student_id, $student_fname, $student_lname, $student_email, $student_phone, $student_dob)
+    {
+
+        $query = "
+			UPDATE students SET 
+				student_fname = ?,
+				student_lname = ?,
+				student_phone = ?,
+				student_email = ?,
+				student_dob = ?	
+			WHERE
+				student_id=?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("sssssi", $student_fname, $student_lname, $student_phone, $student_email, $student_dob, $student_id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+    }
+
     /*** REMOVE  ******************************************************************
      * /*## removes row */
     public function student_delete($id)
@@ -364,6 +500,135 @@ class mysqli_class extends mysqli
         return $results;
     }
 
+    public function sock_list()
+    {
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				Socks	
+			ORDER BY socktype";
+
+        if ($stmt = parent::prepare($query)) {
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            while ($stmt->fetch()) {
+                $x = array();
+                foreach ($row as $key => $val) {
+                    $x[$key] = $val;
+                }
+                $results[] = $x;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+        return $results;
+    }
+
+    public function sock_insert($sockname, $socktype, $sockprice)
+    {
+        $query = "
+			INSERT INTO Socks
+				(sockname,
+				socktype,
+				sockprice)	
+			VALUES
+				(?,?,?)";
+        if ($stmt = parent::prepare($query)) {
+            //GIVE SOCKPRICE A VALUE IF IT IS OUT OF RANGE OR IS NOT A DOUBLE
+            if (($sockprice > (double)PHP_INT_MAX) || ($sockprice < (double)PHP_INT_MIN) || (!is_double($sockprice))) {
+                $sockprice = 99.99;
+            }
+            $stmt->bind_param("ssd", $sockname, $socktype, $sockprice);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $last_id = $this->insert_id;
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $last_id;
+
+    }
+
+    public function sock_info($id)
+    {
+
+        $results = array();
+        $query = "
+			SELECT 
+				*	
+			FROM 
+				Socks
+			WHERE
+				id = ?";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            $stmt->fetch();
+            $x = array();
+            foreach ($row as $key => $val) {
+                $results[$key] = $val;
+            }
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $results;
+
+    }
+
+    public function sock_edit($id, $sockname, $socktype, $sockprice)
+    {
+
+        $query = "
+			UPDATE Socks SET 
+				sockname = ?,
+				socktype = ?,
+				sockprice = ?
+			WHERE
+				id=?";
+        if ($stmt = parent::prepare($query)) {
+            if ($sockprice > (double)PHP_INT_MAX || $sockprice < (double)PHP_INT_MIN || !is_double($sockprice)) {
+                $sockprice = 99.99;
+            }
+            $stmt->bind_param("ssdi", $sockname, $socktype, $sockprice, $id);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+    }
+
     /** SHOWS START HERE */
     public function show_list()
     {
@@ -414,6 +679,31 @@ class mysqli_class extends mysqli
 				(?,?,?,?,?,?)";
         if ($stmt = parent::prepare($query)) {
             $stmt->bind_param("siiiss", $showname, $year, $runtime, $votes, $genres, $description);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $last_id = $this->insert_id;
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return $last_id;
+
+    }
+
+    public function show_genre_insert($show_id, $genre_id)
+    {
+        $query = "
+			INSERT INTO shows_genres
+				(show_id,
+				 genre_id)
+			VALUES
+				(?,?)";
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("ii", $show_id, $genre_id);
             if (!$stmt->execute()) {
                 trigger_error($this->error, E_USER_WARNING);
             }

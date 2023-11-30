@@ -9,7 +9,7 @@
 
         <li class="nav-item">
             <a class="nav-link" href="show_list.php">
-                <i class="mdi mdi-school menu-icon"></i>
+                <i class="mdi mdi-television menu-icon"></i>
                 <span class="menu-title">Shows</span>
             </a>
         </li>
