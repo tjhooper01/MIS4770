@@ -782,4 +782,9 @@ class mysqli_class extends mysqli
         }
 
     }
+
+    public function review_add($id, $review_value, $review_content, $review_date, $show_id, $user_id)
+    {
+        
+    }
 }//END CLASS
