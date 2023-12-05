@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="pen.eiu.edu" id="300b2dc2-586e-4886-b4bf-05136b053d24" port="22" nameFormat="DESCRIPTIVE" username="tjhooper" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
