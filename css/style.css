@@ -24396,6 +24396,10 @@ dl li {
 
 #webTitle {
     font-size: 24px;
-    border-left: 12px;
+    border-right: 12px;
 }
 
+#mainLogo {
+    width: 50%;
+    height: auto;
+}
